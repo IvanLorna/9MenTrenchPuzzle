@@ -7,19 +7,59 @@ fprintf("CS205 Project 1");
 %define the map matrix that is the Trench
 %it is defined as the win condition
 %the 0 is the blank space
-problem = [
-    -1,-1,-1, 0,-1, 0, -1, 0, -1, -1;
-     0, 2, 2, 2, 2, 2,  2, 2,  2,  1]
+
+problem3 = [
+    -1, 0, -1;
+     0, 2,  1]
+
+ solution3 = [
+    -1, 0, -1;
+     1, 2,  0]
+
+
+problem5 = [
+    -1,-1, 0, -1, -1;
+     0, 2, 2,  1,  0]
+
+solution5 = [
+    -1,-1, 0, -1, -1;
+     1, 2, 2,  0,  0]
  
- solution = [
-    -1,-1,-1, 0,-1, 0, -1, 0, -1, -1;
-     1, 2, 2, 2, 2, 2,  2, 2,  2,  0]
+solution5v2 = [
+    -1,-1, 1, -1, -1;
+     0, 2, 0,  2,  0]
+
+
+problem7 = [
+    -1,-1, 0,-1, 0, -1, -1;
+     0, 2, 2, 2, 2,  1,  0]
+
+solution7 = [
+    -1,-1, 0,-1, 0, -1, -1;
+     1, 2, 2, 2, 2,  0,  0]
+
+solution7v2 = [
+    -1,-1, 1,-1, 0, -1, -1;
+     0, 0, 0, 2, 2,  2,  2]
+
+solution7v3 = [
+    -1,-1, 0,-1, 0, -1, -1;
+     0, 2, 2, 1, 2,  2,  0]
+
+problemO = [
+    -1,-1, 0,-1, 0, -1, -1;
+     0, 2, 3, 4, 5,  1,  0]
+
+solutionO = [
+    -1,-1, 0,-1, 0, -1, -1;
+     1, 2, 3, 4, 5,  0,  0]
+
 
 %concatenated to the right of each matrix is the additional information
 % 0 indicates a space that is empty and can be moved into by any trench men
 % 1 indicates the trench officer and must be moved to the leftmost tile
 % 2 indicates the other non-officer trench men
-%-1 indicates an obstacle. these tiles cannot be moved into
+%-1 indicates an obstacle. these tiles cannot be moved into or moved around
 % top right '0' will indicate weight of the node
 
 %i will not create the code that randomly generates a combination of the
@@ -38,7 +78,7 @@ problem = [
 % 2-- A* with Manhattan Distance Hueristic
 
 %note that Uniform Cost will be the default for input outside these values
-QUEUEING_FUNCTION = 0;
+%QUEUEING_FUNCTION = 1
 
 %nodes is a 3D array representing the queue of matrix states 
 %   nodes(:,:,1) = node with least weight / closest to solution
@@ -52,28 +92,163 @@ QUEUEING_FUNCTION = 0;
 %runtime than neccessary, useful for testing, enter 0 if unknown
 max_depth = 0;
 
+h1 = zeros([6,1]);
+h2 = zeros([6,1]);
+h3 = zeros([6,1]);
+
+
+%%
+itt = 1;
+
+tic;
+general_search(problem3, solution3, 0);
+h1(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem5, solution5, 0);
+h1(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem5, solution5v2, 0);
+h1(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem7, solution7, 0);
+h1(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem7, solution7v2, 0);
+h1(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem7, solution7v3, 0);
+h1(itt) = toc;
+itt = itt+1;
+%%
+
+%tic;
+%general_search(problemO, solutionO, 0);
+%h1(itt) = toc;
+
+%%
+itt = 1;
+
+tic;
+general_search(problem3, solution3, 1);
+h2(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem5, solution5, 1);
+h2(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem5, solution5v2, 1);
+h2(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem7, solution7, 1);
+h2(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem7, solution7v2, 1);
+h2(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem7, solution7v3, 1);
+h2(itt) = toc;
+itt = itt+1;
+%%
+
+%tic;
+%general_search(problemO, solutionO, 1);
+%h2(itt) = toc;
+%%
+itt = 1;
+
+tic;
+general_search(problem3, solution3, 2);
+h3(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem5, solution5, 2);
+h3(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem5, solution5v2, 2);
+h3(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem7, solution7, 2);
+h3(itt) = toc;
+itt = itt+1;
+
+tic;
+general_search(problem7, solution7v2, 2);
+h3(itt) = toc;
+itt = itt+1;
+%%
+
+%tic;
+%general_search(problem7, solution7v3, 2);
+%h3(itt) = toc;
+%itt = itt+1;
+
+%%
+h1
+h2
+h3(6) = 43220
+%%
+
+
 %execute the general search function derived from given psuedocode
 colors = ['r-','g-','b-'];
 
-for qf = [3,1,2]
-    QUEUEING_FUNCTION = qf;
-
-    for i = 1:11%1:(size(problems,3)-2*(3-qf))
-        tic;
-        general_search(problems(:,:,i), solution, QUEUEING_FUNCTION,max_depth);
-        data(i,:,qf) =[i,toc];
-    end
-
-    semilogy(data(:,1,qf),data(:,2,qf), colors(qf), 'LineWidth', 1, 'MarkerSize', 2);
-    hold on;
-
-end
-
+semilogy(h1,'r-','LineWidth', 1, 'MarkerSize', 2);
+hold on;
+semilogy(h2,colors(2),'LineWidth', 1, 'MarkerSize', 2);
+semilogy(h3,colors(3),'LineWidth', 1, 'MarkerSize', 2);
 legend('Uniform Cost Search', 'A* with Misplaced Tile', 'A* with Manhattan Distance' )
 title("Figure 4: Line Plot of Runtime of Different Algorithms")
-xlabel('Complexity (in moves needed to solve)');
+xlabel('Test #');
 ylabel('Time Taken to Solve (sec)')
 hold off;
+%%
+%Simple Problem
+Simple_problem = [
+    -1, 0, -1;
+     0, 2,  1]
+
+ Simple_solution = [
+    -1, 0, -1;
+     1, 2,  0]
+ 
+ tic;
+ general_search(Simple_problem,Simple_solution,1)
+ 
+%%
+ %Complex Problem
+ Complex_problem = [
+     -1, -1, 0, -1, 0, -1, -1;
+      0,  2, 2,  2, 2,  1,  0]
+Complex_solution = [
+    -1, -1, 0, -1, 0, -1, -1;
+     0,  1, 2,  2, 2,  2,  0]
+ 
+general_search(Complex_problem,Complex_solution,1)
+ 
 %%
 qf = 1
 plot(data(:,1,qf),data(:,2,qf), colors(qf), 'LineWidth', 1, 'MarkerSize', 2);
@@ -91,123 +266,144 @@ ylabel('Time Taken to Solve (sec)');
 hold off;
 
 %%
-function general_search(problem,solution, QUEUEING_FUNCTION,max_depth) %answer is the return value
-    nodes = MAKE_QUEUE(problem,solution, QUEUEING_FUNCTION);%nodes is the queue of states that the algorithm will analyze
-    answer = ones([3,4])*-1; %-1 value represents failure to find a solution
-    d = 0;
-    max_q_size = 1;
-    nodes_expanded = 1;
-    depth = 0;
-    visited_s = 1;
-    visited = zeros([3,3,1]);
+function general_search(problem,solution, QUEUEING_FUNCTION) %answer is the return value
+   w = 0;    
+    visited = problem;
+    [nodes,w] = MAKE_QUEUE(problem,w,solution, QUEUEING_FUNCTION);%nodes is the queue of states that the algorithm will analyze
+    %current_depth = 0;
+    max_depth = 0;
+    
+    %current_q_sz = 1;
+    max_q_sz = 1;
+    
     while size(nodes,3) >= 1
-        if nodes(1:3,1:3,1) == solution %solution check
+        if nodes(:,:,1) == solution %solution check
             front_of_queue = nodes(:,:,1)
             fprintf("solution found\n");
-            fprintf( "max depth: %d\n", depth);
-            fprintf("nodes expanded: %d\n",nodes_expanded);
-            fprintf("max queue size: %d\n",max_q_size);
-            answer = nodes(:,:,1);
+            fprintf("puzzle shape: %dx%d\n",size(solution,1),size(solution,2))
+            fprintf("queueing function: %d\n",QUEUEING_FUNCTION)
+            fprintf( "largest weight: %d\n", max_depth);
+            fprintf("nodes expanded: %d\n",size(visited,3));
+            fprintf("max queue size: %d\n",max_q_sz);
+            %answer = nodes(:,:,1);
             return;
         end
         
-        if (visited_s > 1) & (size(nodes,3) > 1)
+        if (size(visited,3) > 1) && (size(nodes,3) > 1) %list of previously visited nodes
             for i = 1:size(visited,3)
-                if (nodes(1:3,1:3,1) == visited(:,:,i))
+                if (nodes(:,:,1) == visited(:,:,i))
                     nodes = nodes(:,:,2:size(nodes,3));
                 end
             end
         end
         
-        if depth < nodes(3,4,1)
-            depth = nodes(3,4,1);
+        if max_depth < w(1) %check for max depth
+            max_depth = w(1);
         end
-        if max_q_size < size(nodes,3)
-            max_q_size = size(nodes,3);
-        end
-        visited(:,:,visited_s) = nodes(1:3,1:3,1);
-        visited_s = visited_s + 1;
         
-        if ((d >= max_depth) & (max_depth ~= 0))
-            return;
+        if max_q_sz < size(nodes,3) %check for largest queue size
+            max_q_sz = size(nodes,3);
         end
-        nodes = UPDATE_QUEUE(nodes,solution,QUEUEING_FUNCTION); %update queue
         
-        %update stats
-        nodes_expanded = nodes_expanded + 1;        
-        d = d+1;
+        [nodes, w,visited] = UPDATE_QUEUE(nodes,w,solution,QUEUEING_FUNCTION,visited); %update queue
     end
+    fprintf("\nfailed to find solution\n")
+end
+
+function [q,w] = CHECK_VISITED(q,w,v)
+    k = size(q,3);
+    l = size(v,3);
+    index = [];
+    for i =1:k
+        for y = 1:l
+            if q(:,:,i) == v(:,:,y)
+                %q(:,:,i) = [];
+                %w(i) = [];
+                index = cat(1,index,i);
+            end
+            
+        end
+    end
+    
+    q = q(:,:,setdiff(1:k,index));
+    w = w(setdiff(1:k,index));
 end
 
 %queue updating helper function
 %makes all posible "next moves" given a state, doesnt update the weight
-%makes use of the row,col values in the 4th column of matrices to easily
-%update the state, then readjusts the row,col values for next pass
-function  q = MAKE_QUEUE(problem,solution,QUEUEING_FUNCTION)
-    sz = 1; %number of added states, size of third dimension of q
-    y = problem(1,4);
-    x = problem(2,4);
-    if y > 1 && x > 0
-        q(:,:,sz) = problem;
-        q(y,x,sz) = q(y-1,x,sz);
-        q(y-1,x,sz) = 0;
-        q(1,4,sz) = y-1;
-        sz = sz + 1;
-    end
-    if y < 3 && x > 0
-        q(:,:,sz) = problem;
-        q(y,x,sz) = q(y+1,x,sz);
-        q(y+1,x,sz) = 0;
-        q(1,4,sz) = y+1;
-        sz = sz + 1;
-    end
-    if x > 1 && y > 0
-        q(:,:,sz) = problem;
-        q(y,x,sz) = q(y,x-1,sz);
-        q(y,x-1,sz) = 0;
-        q(2,4,sz) = x-1;
-        sz = sz + 1;
-    end
-    if x < 3 && y > 0
-        q(:,:,sz) = problem;
-        q(y,x,sz) = q(y,x+1,sz);
-        q(y,x+1,sz) = 0;
-        q(2,4,sz) = x+1;
+function  [q,w] = MAKE_QUEUE(problem,w,solution,QUEUEING_FUNCTION)
+    q = problem;
+    for i = 1:size(problem,1)
+        for y = 1:size(problem,2)
+            if problem(i,y) == 0
+                newnodes = MAKE_LEGAL_MOVES(problem,i,y);
+                q = cat(3,q,newnodes);
+            end
+        end
     end
     
     %update weights of new nodes
-    q = CALC_WEIGHTS(q,solution,QUEUEING_FUNCTION);
+    q = q(:,:,2:size(q,3));
+    w = CALC_WEIGHTS(q,ones([size(q,3),1])*w,solution,QUEUEING_FUNCTION);
+    return;
+end
+
+function q = MAKE_LEGAL_MOVES(problem,i,y)
+    moves_made = 0;
+    if i == 1 %if on the top row, the only legal move is swapping with the tile below
+        moves_made = moves_made +1;
+        q(:,:,moves_made) = problem;
+        q(i,y,moves_made) = q(2,y,moves_made);
+        q(2,y,moves_made) = 0;
+    else     %else, move left right up if possible
+        if y > 1
+            moves_made = moves_made +1;
+            q(:,:,moves_made) = problem;
+            q(i,y,moves_made) = q(i,y-1,moves_made);
+            q(i,y-1,moves_made) = 0;
+        end
+        if y < size(problem,2)
+            moves_made = moves_made +1;
+            q(:,:,moves_made) = problem;
+            q(i,y,moves_made) = q(i,y+1,moves_made);
+            q(i,y+1,moves_made) = 0;
+        end
+        if q(i-1,y) ~= -1
+            moves_made = moves_made +1;
+            q(:,:,moves_made) = problem;
+            q(i,y,moves_made) = q(i-1,y,moves_made);
+            q(i-1,y,moves_made) = 0;
+        end
+    end
     return;
 end
 
 %weight recalculating helper function
 %this is where queueing function comes into play
 %calculates weight differently depending on input queueing function
-function q = CALC_WEIGHTS(q,solution,QUEUEING_FUNCTION)
+function w = CALC_WEIGHTS(q,w,solution,QUEUEING_FUNCTION)
     switch QUEUEING_FUNCTION
         case 1
-            q = MISPLACED_TILE(q,solution);
+            w = MISPLACED_TILE(q,solution);
             
         case 2
-            q = MANHATTAN_DISTANCE(q,solution);
+            w = MANHATTAN_DISTANCE(q,solution);
         
         otherwise %Uniform Cost Search is used if 0 or an undefined value
-            for i = 1:size(q,3)
-                q(3,4,i) = q(3,4,i) + 1;
-            end
+            w = w + 1;
     end
     return;
 end
 
-function q = MANHATTAN_DISTANCE(q,solution)
+function w = MANHATTAN_DISTANCE(q,solution)
+    w = zeros([size(q,3),1]);
     for i = 1:size(q,3)
-        q(3,4,i) = 0;
-        for ys = 1:3
-            for xs = 1:3
-                for yp = 1:3
-                    for xp = 1:3
+        for ys = 1:size(solution,1)
+            for xs = 1:size(solution,2)
+                for yp = 1:size(q,1)
+                    for xp = 1:size(q,2)
                         if solution(ys,xs) == q(yp,xp,i)
-                            q(3,4,i) = q(3,4,i) + abs(ys-yp) + abs(xs-xp);
+                            w(i) = w(i) + abs(ys-yp + xs-xp);
                         end
                     end
                 end
@@ -216,43 +412,41 @@ function q = MANHATTAN_DISTANCE(q,solution)
     end
 end 
 
-function q = MISPLACED_TILE(q,solution)
-    for i = 1:size(q,3)
+function w = MISPLACED_TILE(q,solution)
+    w = zeros([size(q,3),1]);
+    for i = 1:size(w,1)
         sum = 0;
-        for y = 1:3
-            for x = 1:3
+        for y = 1:size(solution,1)
+            for x = 1:size(solution,2)
                 if q(y,x,i) ~= solution(y,x)
                     sum = sum + 1;
                 end
             end
         end
-        q(3,4,i) = sum+1;
+        w(i) = sum+1;
         
     end
 
 end
 
-function q = UPDATE_QUEUE(nodes, solution, QUEUEING_FUNCTION)
+function [q,w,v] = UPDATE_QUEUE(nodes,w, solution, QUEUEING_FUNCTION,v)
     %expand on top node
-    q = MAKE_QUEUE(nodes(:,:,1),solution, QUEUEING_FUNCTION);
-    %remove top node
-    n_sz = size(nodes,3);
-    front_of_queue = nodes(:,:,1) %uncomment to have popped nodes printed for output
-    
-    nodes = nodes(:,:,2:n_sz);
-    n_sz = n_sz-1;
-    
+    [nq,nw] = MAKE_QUEUE(nodes(:,:,1),w(1),solution, QUEUEING_FUNCTION);
     %concatenate new nodes to queue
-    q_sz = size(q,3);
-    for i = 1:q_sz
-        nodes(:,:,n_sz+i) = q(:,:,i);
-    end
+    q = cat(3,nodes,nq);
+    w =[w;nw];
+    %remove top node
+
+    front_of_queue = nodes(:,:,1) %uncomment to have popped nodes printed for output
+    v= cat(3,v,q(:,:,1));
+    
+    [q,w] = CHECK_VISITED(q,w,v);
+    
     %sort nodes by least weight to greatest
-    [~,SortOrder] = sort(nodes(3,4,:),3);
-    q = nodes(:,:,SortOrder);
-    %while q(3,4,1) == 0
-    %    q = q(:,:,2:size(q,3));
-    %end
-    %q is returned with new sorted nodes 
+    [~,SortOrder] = sort(w,1);
+    q = q(:,:,SortOrder);
+    w = w(SortOrder);
+
+    %q,w is returned with new sorted nodes 
     return;
 end
